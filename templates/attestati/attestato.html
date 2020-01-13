@@ -1,0 +1,85 @@
+
+
+
+
+<p style="width:87%; margin-left:5%; text-align: center; position:absolute; margin-top: 6.3cm; font-weight:600; font-size:11pt;"> {{corso.tipologia}} </p>
+
+<p style="width:85%; margin-left:5%;text-align: center; position:absolute; margin-top: 8.3cm; font-size:6pt; font-style:italic;"> ( {{corso.tipologia.riferimento_legislativo}} )</p>
+
+
+<p style="position:absolute; margin-top: 9.5cm; font-weight:900; font-size:14pt; font-family: Arial, Helvetica, sans-serif; width:100%; text-align: center; ">{{nome}} {{cognome}}</p>
+
+
+<p style="position:absolute; margin-top: 10.3cm; font-size: 10pt; width:100%; text-align: center;">Nat{% if sesso == 'M' %}o{%else%}a{%endif%}: il {{datanascita}} a {{luogo}}</p>
+
+<img style="max-width:6cm; position:absolute; margin-top: 1.5cm; margin-left: 12cm; float:right; max-height: 3cm;" src="http://edafil.org/media/{{logo}}"">
+
+
+
+<p style="width: 85%; position:absolute; text-align: justify;font-size:10pt; margin-top: 11.5cm; margin-left: 1.3cm;"> Ha frequentato il {{corso.tipologia}} della durata di {{corso.tipologia.ore}} ore, svoltosi  
+	{% for i in lista_sv %}
+
+in data {{ i.0 }} inizio a {{ i.1 }} ({{ i.2 }} ore),
+
+	{% endfor %}
+
+ presso la sede di {{corso.indirizzo}}  {{corso.citta}} ({{corso.provincia}}) superando la verifica di apprendimento. </p>
+
+
+
+
+
+<p style="position:absolute; margin-top: 25.5cm; margin-left: 1cm;font-size: 9pt; text-align: justify; width:75%;">Autorizzazione n. {{corso.protocollo}}_{{posizione}}/{{numero_corsisti}} del {{corso.data_richiesta}} 
+	<br>C.F {{corsistacf}}
+<br>Verifica l'autenticità dell'attestato sul sito: www.edafil.org 
+             <br>CONVENZIONE n. {{corso.numero_di_convenzione}} </p>
+
+<img style="width: 2.3cm; position:absolute; margin-top: 24.5cm; margin-left: 15.7cm;" src="http://edafil.org/static/img/qrcode.png"">
+
+
+
+<p style="position:absolute; margin-top: 20.1cm; font-size: 10pt;font-weight:600; margin-left: 8.2cm;">EDAFIL 
+<br>Il Presidente
+<br>Marco Antonino Maiorana </p>
+
+<img style="width: 2.5cm; position:absolute; margin-top: 22cm; margin-left: 8.4cm;" src="http://edafil.org/static/img/firma_maiorana.jpg"">
+
+<img style="width: 3cm; position:absolute; margin-top: 16.8cm; margin-left: 8.5cm;" src="http://edafil.org/static/img/edafil-timbro.jpg"">
+
+
+<p style="position:absolute; margin-top: 17.5cm; margin-left: 1.5cm;font-size: 10pt;font-weight:600;">Centro di formazione <br>autorizzato N. {{corso.numero_di_convenzione}}</p>
+
+<img style="max-width: 5cm; max-height: 3cm; position:absolute; margin-top: 18.8cm; margin-left: 1.2cm;" src="http://edafil.org/media/{{firma}}"">
+
+<p style="position:absolute; margin-top: 17.6cm; margin-left: 14.3cm;font-size: 10pt;font-weight:600;">Il direttore del corso</p>
+
+<img style="max-width: 5cm; max-height: 3cm; position:absolute; margin-top: 18.8cm; margin-left: 13.8cm; " src="http://edafil.org/media/{{firma}}"">
+
+ <div style="page-break-after: always;"></div>
+        <div style="page-break-before: always;"></div>
+
+
+<p style="width:85%; margin-left:6%; text-align: justify; position:absolute; margin-top: 6.3cm; font-size:9pt; ">{{part_one}} </p>
+
+
+{% if part_two != 0 %}
+
+
+ <div style="page-break-after: always;"></div>
+        <div style="page-break-before: always;"></div>
+
+        <p style="width:85%; margin-left:6%; text-align: justify; position:absolute; margin-top: 6.3cm; font-size:9pt; ">{{part_two}} </p>
+
+ {% endif %}
+
+
+
+
+
+
+
+
+
+      
+
+

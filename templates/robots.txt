@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /account/
+Disallow: /account/login/
+
+Host: http://edafil.org
+Sitemap: http://edafil.org/sitemap.xml

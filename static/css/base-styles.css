@@ -1,0 +1,399 @@
+* {
+    /* personal preference */
+    margin: 0;
+    padding: 0;
+}
+html {
+    /* make sure we use up the whole viewport */
+    width: 100%;
+    min-height: 100vh;
+    scroll-behavior: smooth;
+    /* for debugging, a red background lets us see any seams */
+}
+
+body {
+
+	background-color: #4a604a !important;
+
+	width: 100%;
+    min-height: 100vh;
+
+}
+
+
+main {
+    /* for debugging, a blue background lets us see the content */
+
+	min-height: calc(100vh - 10em); /* this leaves space for the sticky footer */
+	background-image: url('http://edafil.org/static/img/wpp3.jpg');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	 background-attachment: fixed;
+
+ overflow: auto;
+
+}
+
+input:read-only {
+  background-color: white!important;
+}
+
+
+ul.ui-autocomplete {
+    z-index: 1100;
+}
+
+
+.container-fluid {
+		
+}
+
+.form-group {
+	width: 100%;
+	overflow: hidden!important;
+}
+
+
+.table .thead-dark th{
+	background-color: #50575d!important;
+}
+
+footer {
+    /* for debugging, a gray background lets us see the footer */
+
+	min-height:10em;
+}
+
+option {
+	width: 200px !important;
+}
+
+/* Change the white to any color ;) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
+
+.vetrofania-mobile {display: none;}
+
+
+.table td{
+    border: gray solid 1px !important;
+}
+
+.table th{
+    border: gray solid 1px !important;
+}
+
+
+.modal-spinner {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('http://sampsonresume.com/labs/pIkfp.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal-spinner {
+    display: block;
+}
+
+
+
+.hidden_corses {display: none;}
+
+#id_corsisti_field {
+	display:none;
+}
+
+#svolgimenti-field {
+	display: none;
+}
+
+
+.navlink-green {
+    color: rgb(48, 59, 48)!important;
+}
+
+.navlink-green:hover {
+    color: rgb(2, 91, 1)!important;
+}
+
+
+#id_data {
+	    padding: 5px;
+}
+
+.nav-link-black {
+	color: black;
+}
+
+.nav-link-black:hover {
+	color:  #423b3b;
+} 
+
+
+.vetrofania {
+
+	width:100%;
+	display: none;
+}
+
+.tipdescr {
+
+	display: none;
+}
+
+.tipprogramma {
+
+	display: none;
+
+}
+
+.tipore {
+
+	display: none;
+
+}
+
+.tipref {
+
+	display: none;
+}
+
+.no-bottom-margin-p {
+
+	margin-bottom: 0 !important;
+}
+
+.card-title-green {
+
+	background-color: #e2f7e6 !important;
+}
+
+
+
+@media screen and (min-width: 800px) {
+
+	.vetrofania-mobile {
+		display: none;
+	}
+
+.mobile_only {
+		display: none;
+	}
+
+
+.base_container_one {
+
+	background-color: white; 
+	padding-top:25px; 
+	padding-bottom: 25px; 
+	margin-top:20px; 
+	margin-bottom: 55px; 
+	margin-left: 17%; 
+
+}
+
+
+.navbar_margin {
+	margin-left: 6%;
+}
+
+.nuovarichiesta {
+
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
+
+
+
+.thcustomwidth {
+    width: 8rem;
+}
+
+.thcustomwidth-numero {
+	width: 6rem;
+}
+
+
+.card-header {
+
+	    padding-top: 25px !important;
+}
+
+
+li {
+
+	    margin-left: 20px;
+}
+
+
+.header-sito
+	{
+    font-size: 1.2rem;
+
+}
+
+
+.title-h2 {
+
+	text-shadow: 3px 3px 5px white;
+}
+
+
+.aggiungi {
+	box-shadow: 5px 5px 5px;
+
+}
+
+
+
+
+.logo-edafil {
+
+
+    width: 300px;
+
+	
+}
+
+.card {
+
+	background-color: #e5f2e8 !important;
+    box-shadow: 5px 5px 5px;
+
+
+}
+
+.row {
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
+}
+
+
+@media (max-width: 500px) {
+
+	.base_container_one {
+		border-right: 5px solid rgb(229, 242, 232)!important;
+    border-left: 5px solid rgb(229, 242, 232)!important;
+	}
+
+.btn {
+	margin-bottom: 5px;
+}
+
+
+.col-8 {
+
+    max-width: 100%!important;
+    flex: 0 0 100%!important;;
+}
+
+.col-10 {
+
+    max-width: 100%!important;
+    flex: 0 0 100%!important;
+}
+
+.col-6 {
+
+    max-width: 100%!important;
+    flex: 0 0 100%!important;;
+}
+
+
+.col-4 {
+     max-width: 100%!important;
+    flex: 0 0 100%!important;;
+}
+
+.vetrofania {display: none;}
+
+.mobile_menu {
+	margin-top: 0;
+	width: 100%;
+
+
+}
+
+.mobile_none {
+	display: none!important;
+}
+
+.base_container_one {
+
+	display: block;
+
+	margin-top: 15px;
+}
+
+
+.navbar_margin {
+	margin-left: 0;
+}
+
+footer {
+	display: none!important;
+}
+
+
+.logo-edafil-small {
+
+		height: 60px;
+	
+}
+
+.vetrofania-mobile {
+
+	width: 95%;
+	display: block;
+	padding-top: 15px;
+	margin: 0 auto;
+}
+
+.container {
+	padding-left: 0!important;
+	padding-right: 0!important;
+}
+
+.container-fluid {
+
+	padding: 0!important;
+	margin-top: -15px;
+
+}
+
+.row {
+	margin-left: 5px!important;
+	margin-right: 5px!important;
+}
+
+.card {
+	margin-bottom: 20px;
+}
+
+
+}

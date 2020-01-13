@@ -1,0 +1,116 @@
+    {% extends "base.html" %}
+
+    {% load crispy_forms_tags %}
+
+    {% block content %}
+
+    {% if user.is_authenticated %}
+
+
+
+
+
+          <div class="row" style="margin-top: 25px;">
+            <div class="col-12">
+
+<div class="table-responsive">
+
+                    <table class="table table-striped">
+                      <thead class="thead-dark ">
+                        <tr style="text-align:center;">
+
+                          <th scope="col">Data</th>
+                          <th scope="col" >Corso</th>
+                          <th scope="col" >File</th>
+                           <th scope="col" >Ricevuta</th>
+                           <th scope="col" >Saldata</th>
+
+     
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        {% if fatture %}
+
+                             {% for f in fatture %}
+                        <tr >
+                          <th >{{f.data}}</th>
+                          <td>{{ f.corso.tipologia}}, <span style="font-weight: 900;">protocollo #{{ f.corso.protocollo}}</span></td>
+                          <th >{% if f.fattura_pdf != '' %}<a href="/media/{{f.fattura_pdf}}">Visualizzare</a>{% else %}  {% endif %}</th>
+                               
+
+                               <td style="max-width: 300px; ">
+                                {% if f.ricevuta_caricata != True %}
+                                <div class="col-8 col-sm-12"> 
+              {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+              <form enctype="multipart/form-data" action='' method='POST'>
+                            {% csrf_token %}
+                      
+
+                       {{ form.ricevuta|as_crispy_field }}
+
+                                  
+                                  <input type="hidden" name="fattura_id" value="{{f.id}}"/>
+
+
+
+                                  <button type="submit button" value="Submit"  class="btn btn-success" style="margin-top: 5px; margin-bottom: 10px;">Caricare</button>
+                            </form>
+                            {% else %}
+                            Ricevuta è stata caricata, grazie
+                            {% endif %}
+                          </td>
+                    
+                          <td style="width: 120px; text-align: center;"><span style="font-weight: 900;">{% if f.pagato == True %} Saldata {% else %} Non saldata {% endif %}</span></td>
+
+
+
+
+
+                        </tr>
+
+                            {% endfor %}
+
+                          {% else %}
+
+                          Non ci sono fatture 
+                          <br><br>
+                          {% endif %}
+                          
+
+                      </tbody>
+                    </table>
+                  </div>
+
+         
+            </div>
+          
+          </div>
+                              
+
+
+
+           {% else %} 
+
+
+            Accesso negato
+
+
+
+          {% endif %}
+
+
+  {% endblock %}

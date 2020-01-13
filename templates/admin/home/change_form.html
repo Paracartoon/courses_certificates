@@ -1,0 +1,56 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+{% block object-tools-items %}
+    <li>
+        <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a>
+    </li>
+    <li>
+        <a href="mylink/" class="historylink">Inviare lettera autorizzazione</a>
+    </li>
+    {% if has_absolute_url %}
+        <li>
+            <a href="{% url 'admin:view_on_site' content_type_id original.pk %}" class="viewsitelink">{% trans "View on site" %}</a>
+        </li>
+    {% endif %}
+
+    <link href='https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css' rel='stylesheet' type='text/css'>
+
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+        crossorigin="anonymous">
+    </script>
+
+    <script>
+        $( document ).ready(function() {
+            console.log( "ready!" );
+            var field = $("#id_svolgimenti_field");
+            field.hide();
+            var container = field.parent();
+            var table = $('<table/>');
+            var headerRow = $('<tr><th>Inizio</th><th>Ora</th><th>Durata</th></tr>');
+            table.append(headerRow);
+
+            var svolgimenti = [];
+            try {
+                svolgimenti = JSON.parse(field.val());
+            } catch (e) {
+                console.error(e)
+            }
+
+            svolgimenti.forEach(function(v) {
+                var dataRow = $('<tr><td>'+v.inizio+'</td><td>'+v.ora+'</td><td>'+v.durata+'</td></tr>');
+                table.append(dataRow);
+            })
+            container.append(table);
+        })
+    </script>
+
+
+
+{% endblock %}

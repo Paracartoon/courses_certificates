@@ -1,0 +1,40 @@
+@page  {
+
+	margin-left: 0cm;
+	margin-right: 0cm;
+	margin-top: 0cm;
+	margin-bottom: 0cm;
+}
+
+html {
+
+}
+
+body {
+
+
+	background-image: url('http://edafil.org/static/img/attestato_blank.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+
+
+}
+
+
+p {
+	font-family:verdana;
+}
+
+
+h1 {
+    /* personal preference */
+    color: red;
+}
+
+
+
+@page {
+  size: A4;
+}
+
+

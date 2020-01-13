@@ -1,0 +1,106 @@
+ {% extends "base_white.html" %}
+    {% load staticfiles%}
+
+    {% load crispy_forms_tags %}
+
+    {% block content %}
+     <div class="row">
+
+    <div class="col-md-12" >
+
+  
+              <div class="card">
+
+              	<div class="card-header">
+              	<p class="font-weight-bold header-sito"><i class="far fa-envelope"></i></i> Contatti</p>
+
+              	</div>
+
+              	<div class="card-body">
+
+
+<p class="font-weight-bold text-center">EDAFIL si trova in Z.I. Pantano D’Arci – Catania presso Bic Sicilia Srl e i suoi collaboratori sono a vostra completa disposizione 
+  <br><br>dal Lunedì al Venerdì dalle ore 09:00 alle ore 13:00 e dalle ore 14:00 alle ore 18:00 
+  <br><br>ci potete contattare telefonicamente ai numeri 
+095/5861355 o compilando il form di contatto:</p>
+
+                        <div class="row">
+
+                            <div class="col-md-8" >
+
+                        <form method="post">
+                            {% csrf_token %}
+                              <div class="form-group">
+                                {{ form.soggetto|as_crispy_field }}
+                               </div>
+                               <div class="form-group">
+                                {{ form.nome|as_crispy_field }}
+                               </div>
+                               <div class="form-group">
+                                {{ form.email|as_crispy_field }}
+                               </div>
+                               <div class="form-group">
+                                {{ form.telefono|as_crispy_field }}
+                               </div>
+                               <div class="form-group">
+                                {{ form.messaggio|as_crispy_field }}
+                               </div>
+
+                            <div class="form-actions">
+                               <span class="float-right"> 
+                              <button type="submit" class="btn btn-success">Invia messaggio</button>
+                               </span>
+                            </div>
+                        </form>
+
+                        </div>
+                        </div>
+
+ 
+ 
+<br>Inoltre l’ente mette a disposizione di tutti gli utenti i contatti diretti per le specifiche aree di interesse:
+
+
+
+ 
+<br><br>PRESIDENZA (Marco Antonino Maiorana)
+presidente@edafil.org
+
+<br><br>INFORMAZIONI GENERICHE E APERTURE SEDI TERRITORIALI
+info@edafil.org
+
+<br><br>STIPULA CONVENZIONE PER APERTURA CENTRI DI FORMAZIONE AUTORIZZATI
+adesione@edafil.org
+
+<br><br>RILASCIO CORSI
+corsi@edafil.org
+
+<br><br>RICHIESTA TESSERINI 
+tesserini@edafil.org
+
+<br><br>VERIFICHE VALIDITA’, DICHIARAZIONI E RILASCIO COPIE ATTESTATI
+verifica@edafil.org
+
+<br><br>ASSISTENZA TECNICA E ALL’USO DELLA PIATTAFORMA EDAFAD
+assistenza@edafil.org
+
+<br><br>SERVIZI AMMINISTRATIVI E CONTABILITA’ 
+amministrazione@edafil.org
+
+ 
+<br><br>Si comunica infine che è attiva la pagina Facebook ufficiale di EDAFI§L, lasciaci un MI PIACE per seguirci e far crescere l’Ente.
+
+
+
+
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+
+
+  {% endblock %}

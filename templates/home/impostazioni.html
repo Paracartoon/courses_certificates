@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+
+
+
+{% block content %}
+
+
+
+
+
+
+
+
+{% if form.errors %}
+  <!-- Error messaging -->
+  <div id="errors">
+    <div class="inner">
+      <p>There were some errors in the information you entered. Please correct the following:</p>
+      {{ form.non_field_errors }}
+      <ul>
+        {% for field in form %}
+          {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <!-- /Error messaging -->
+{% endif %}
+
+
+
+
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+                        <div class="row nuovarichiesta">
+                          <div class="col-12">
+                            <h4>
+                              <p class="text-center font-weight-bold no-bottom-margin-p">
+                             <i class="fas fa-scroll"></i> Impostazioni
+                          </p>
+                        </h4>
+
+                          </div>  
+                        </div>
+
+
+
+
+                                                {{ form.errors }}
+                                                 {{ form.non_field_errors }}
+
+
+
+
+
+      <form enctype="multipart/form-data" action='' method='POST'>
+                                    
+
+                                                     {% csrf_token %}
+
+              <div class="row">
+                  
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file in formato *PDF, *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                          {{form.programma_svolto|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file in formato *PDF, *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.test|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file in formato *PDF, *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.registro|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+    </div>
+
+
+
+              <div class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+
+
+               <button type="submit button" value="Submit" class="btn btn-primary btn-lg" style="margin-right: 25px;">
+                  <span class="font-weight-bold">
+                  <i class="fas fa-check-circle fa-lg"></i> Inviare
+                  </span>
+                </button>
+
+              </div>
+
+</form>
+
+ 
+        
+
+
+
+
+
+
+
+
+
+{% endblock %}

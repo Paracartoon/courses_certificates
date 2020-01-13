@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+    {% load crispy_forms_tags %}
+
+    {% block content %}
+
+
+
+    {% if user.is_authenticated %}
+
+      <div class="row" style="margin-top: 25px;">
+            <div class="col-2">
+
+
+            </div>
+            <div class="col-8 col-sm-12"> 
+              {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+              <form enctype="multipart/form-data" action='' method='POST'>
+                            {% csrf_token %}
+<div class="table-responsive">
+                              <table class="table table-bordered table-light">
+                                <thead class="thead-dark ">
+                                          <tr>
+                                        <th scope="col" >Nome e cognome del docente</th>
+                          <th scope="col">Curriculum</th>
+                          <th scope="col">Autocertificazione</th>
+                  
+                              
+
+     
+                                        </tr>
+                                </thead>
+                              <tbody>
+                                      
+
+                          
+
+                             <tr>
+                          <td>{{ form.nome_cognome }}</td>
+                          <td style="max-width: 200px; overflow: hidden;">{{ form.curriculum }}</td>
+                          <td style="max-width: 200px; overflow: hidden;">{{ form.autocertificazione }}</td>
+                          <input type="hidden" name="user" class="form-control" id="id_user" value="{{user.id}}"> 
+
+
+
+                        </tr>
+     
+
+                      </tbody>
+                    </table>
+
+      
+
+  </div>
+      
+
+
+                                  <button type="submit button" value="Submit"  style="margin-top:15px; margin-bottom:15px;" class="btn btn-info">Aggiornare i dati del docente</button>
+                            </form>
+
+                        
+
+
+            </div>
+          </div>
+
+
+          
+  
+                              
+
+
+
+           {% else %} 
+
+
+            Accesso negato
+
+
+
+          {% endif %}
+
+
+  {% endblock %}
+
+

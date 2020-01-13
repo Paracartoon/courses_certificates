@@ -1,0 +1,349 @@
+{% extends "base_white.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<script type="text/javascript">
+
+  let ok = false;
+
+
+
+  var token = '{{csrf_token}}';
+ 
+
+    function aggiungiCorsista(userid) {
+
+
+   
+
+
+    var form = $('#aggiungi-corsista-form')[0];
+    var data = new FormData(form);
+    console.log(form, data)                      
+
+    var form = $(this).closest("form");
+      $.ajax({
+        headers: { "X-CSRFToken": token },
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/account/aggiungi_corsista",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (res, status) {
+            console.log('ok', res)
+
+            $('#corsisti').text($('#corsisti').text() + res.name+' | ');
+            ok = true;
+
+           
+
+
+        },
+        error: function (res) {
+            alert('Errore! bisogna compilare tutti i campi: nome e foto.');
+            console.error('not ok', res.status);                                                                                                                          
+        }
+    });
+
+
+
+
+
+      };
+
+
+
+
+
+
+$body = $("body");
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");    },
+     ajaxStop: function() { $body.removeClass("loading"); }    
+});
+
+
+
+
+
+$( document ).ready(function() {
+
+  var check = {{ corsistijq|safe }};
+  console.log('check', check)
+  if (check == '') {
+    $(":submit").attr("disabled", true);
+    $("#modal-button").attr("disabled",true);
+    alert('Prima bisogna inoltrare la richiesta rilascio attestati')
+
+  }
+
+
+
+
+
+
+$("#button_aggiungi_corsista").click(function() {
+
+    $('#id_nome_cognome').val("");
+    $('#id_foto').val("");
+});
+
+var checktext = '';
+
+
+$('#rtform').submit(function(event) {
+
+
+  event.preventDefault(); 
+
+  if (ok == true)
+  {
+    console.log('OK')
+    $(this).unbind('submit').submit()
+  }
+  else if (ok == false)
+  {
+    console.log('NOT OK')
+    alert('Si prega di caricare foto corsista')
+  }
+  
+
+
+});
+
+
+
+});
+
+
+
+
+
+$(window).on('shown.bs.modal', function() {
+
+
+    var corsistijq = {{ corsistijq|safe }};
+
+
+    $('#id_nome_cognome').autocomplete({
+
+      source: corsistijq
+    });
+
+
+});
+
+
+
+
+
+
+  </script>
+
+
+
+
+
+{% if form.errors %}
+  <!-- Error messaging -->
+  <div id="errors">
+    <div class="inner">
+      <p>There were some errors in the information you entered. Please correct the following:</p>
+      {{ form.non_field_errors }}
+      <ul>
+        {% for field in form %}
+          {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <!-- /Error messaging -->
+{% endif %}
+
+
+
+
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+                        <div class="row nuovarichiesta">
+                          <div class="col-12">
+                            <h4>
+                              <p class="text-center font-weight-bold no-bottom-margin-p">
+                             <i class="far fa-id-card"></i> Nuova richiesta di rilascio tesserini
+                          </p>
+                        </h4>
+
+                          </div>  
+                        </div>
+
+
+
+
+                                                {{ form.errors }}
+                                                 {{ form.non_field_errors }}
+
+
+
+
+
+      <form enctype="multipart/form-data" action='' method='POST' id="rtform">
+                                    
+
+                                                     {% csrf_token %}
+
+              <div class="row">
+                  
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file in formato *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                          {{form.logo|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file in formato Excel: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.modulo_richiesta|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-envelope"></i> Indirizzo di spedizione: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.indirizzo_spedizione|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+    </div>
+
+    <div class="row">
+
+      <div class="col-10">
+
+                                <div class="card" style="background-color: #dee2e6;">
+                                  <div class="card-header"><p class="font-weight-bold"><i class="fas fa-users"></i> Foto Corsisti:</p></div>
+                                    <div class="card-body">
+                                      <p>Sono state caricate le foto per i seguenti corsisti:</p>
+                                      <div class="form-group corsisti" id="corsisti">
+                                          
+                                      </div>
+
+                                     
+
+                                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#aggiungi_corsista" id="button_aggiungi_corsista"><i class="far fa-file-image"></i> Aggiungi foto corsista</button>
+
+
+
+
+
+                                </div>
+                                </div>
+
+
+
+                                  
+
+
+                              </div>
+        </div>
+
+
+
+
+  <input name="numero_corso_field" style="display: none;"  value="{{corsoid}}">
+
+
+
+           <div class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+
+        
+
+               <button type="submit button" value="Submit" class="btn btn-primary btn-lg" style="margin-right: 25px;">
+                  <span class="font-weight-bold">
+                  <i class="fas fa-check-circle fa-lg"></i> Invia richiesta
+                  </span>
+                </button>
+
+
+              </div>
+
+</form>
+
+
+
+<!-- Modal -->
+                        <div class="modal fade" id="aggiungi_corsista" tabindex="-1" role="dialog" aria-labelledby="aggiungi_corsistaLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Foto corsista</h5>
+
+                               
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 
+
+
+                                <form method="POST" enctype="multipart/form-data" id="aggiungi-corsista-form">
+                                <input type="hidden" name="user" class="form-control" id="id_user" value="{{user.id}}"> 
+                                  <div class="form-group">
+                                    <label for="nome_cognome"> Nome corsista </label>
+                                    <input type="text" name="nome_cognome" class="form-control" required="" id="id_nome_cognome">
+                                  </div>
+                                  <div class="form-group">
+                                    <label for="foto"> FOTO *jpg </label>
+                                     <input type="file" name="foto" class="form-control" style="padding:0;"  required="" id="id_foto" style="padding-bottom: 36px;">
+                                  </div>
+                                  <input name="corsoid" style="display: none;"  value="{{corsoid}}">
+                              
+                                </form>
+
+                              </div>
+                              <div class="modal-footer">
+
+                                <button type="button" class="btn btn-primary" id="modal-button" data-dismiss="modal" onclick="aggiungiCorsista()">Aggiungere foto corsista</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal-spinner"></div>
+
+
+</div>
+{% endblock %}

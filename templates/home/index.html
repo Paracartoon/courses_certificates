@@ -1,0 +1,1018 @@
+ {% extends "base_white.html" %}
+
+{% load crispy_forms_tags %}
+
+
+
+
+{% block content %}
+
+<script>
+
+  var oreToCheck
+  var sum_ore_global
+  var apriore = 0
+
+
+  var token = '{{csrf_token}}';
+ 
+  function aggiungiDocente(userid) {
+
+    
+
+  
+
+    if ($('#id_curriculum').val() == '') {
+      alert('Bisogna inserire curriculum')
+    }
+
+    else if ($('#id_autocertificazione').val() == '') {
+      alert('Bisogna inserire autocertificazione')
+    }
+
+    else if ($('#id_nome_cognome').val() == '') {
+      alert('Bisogna inserire nome e cognome docente')
+    }
+
+
+    else {
+     $("#button_ad_modal").attr("disabled", true); 
+
+    var form = $('#aggiungi-docente-form')[0];
+    var data = new FormData(form);
+
+    var form = $(this).closest("form");
+      $.ajax({
+        headers: { "X-CSRFToken": token },
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "/account/aggiungi_docente",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (res, status) {
+
+             if (res.value == 0) {
+
+
+              alert('Il docente con nome '+res.name+' è già presente nell`elenco')
+              $("#button_ad_modal").attr("disabled", false);
+
+             }
+
+             else {
+              $('#aggiungi_docente').modal('hide');
+
+
+            $('#div_id_docenti').append('<div class="form-check"><label class="form-check-label" for="id_docenti_2"><input type="checkbox" class="form-check-input" name="docenti" id="id_docenti_2" value="'+res.value+'" >'+res.name+'</label></div>');
+
+
+          }
+
+
+        },
+        error: function (res) {
+            console.error(res.status);                                                                                                                          
+        }
+    });
+
+    };
+
+  };
+
+
+$body = $("body");
+
+
+
+
+var token = '{{csrf_token}}';
+
+
+
+
+  $body = $("body");
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");    },
+     ajaxStop: function() { $body.removeClass("loading"); }    
+});
+
+
+
+  function closeBox(event){
+    var box = $(event.target).parent().parent().parent().parent().parent()
+
+    if (box.parent().children().length > 1) {
+
+      box.slideUp( "slow", function() {
+        box.remove()
+          $("#svolgimenti").children().each(function(i, element){
+          var block = $(element);
+          var label = block.find('.svolgimento-title');
+          label.text("Svolgimento " + (i + 1));
+        })
+      });
+    }
+  }
+
+  function addSvolgimento() {
+
+    var newBox = $("#svolgimento_div_template").clone().attr('id', 'svolgimento_div_' + index);
+
+    var label = newBox.find('.svolgimento-title');
+    var datepick = newBox.find('.dateinput');
+    var index = $("#svolgimenti").children().length + 1;
+    label.text("Svolgimento " + index);
+    datepick.attr('id', 'datapicker_' + index);
+
+
+
+    newBox.appendTo("#svolgimenti");
+    $('#datapicker_' + index).attr('autocomplete', 'off').prop("readonly", true);
+
+    var modifica = '{{modifica}}'
+    if  (modifica == 'ok')
+      {$('#datapicker_' + index).datepicker({ dateFormat: 'dd-mm-yy' });}
+    else {
+    $('#datapicker_' + index).datepicker({ minDate: 2, dateFormat: 'dd-mm-yy' }); }
+
+    index++;
+
+    return newBox;
+
+  }
+
+
+  function svolgimentoChangeHandler() {
+    var svolgimenti = [];
+    var ore = [];
+    
+    $("#svolgimenti").children()
+      .each(function(i, element){
+        var block = $(element);
+
+        svolgimenti.push({
+          inizio: block.find('.svolgimento-inizio').val(),
+          ora: block.find('.svolgimento-ora').val(),
+          durata: block.find('.svolgimento-durata').val()
+        })
+
+        ore.push({
+
+          ora: block.find('.svolgimento-durata').val(),
+
+        })
+      })
+
+    var svolgimentiJSON = JSON.stringify(svolgimenti);
+    var oreJSON = JSON.stringify(ore);
+    var oreparsed = JSON.parse(oreJSON);
+
+    $('#id_svolgimenti_field').val(svolgimentiJSON);
+
+    var sum_ore = 0;
+
+     oreparsed.forEach(function(v) {
+                console.log(v.ora);
+                sum_ore += parseInt(v.ora)
+            })
+
+     sum_ore_global = sum_ore
+
+
+
+
+  }
+
+
+$( document ).ready(function() {
+
+$.datepicker.regional['it'] = {
+    closeText: 'Chiudi', closeStatus: 'Fermer sans modifier',
+    monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu',
+'Lug','Ago','Set','Ott','Nov','Dic'],
+dayNames: ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
+dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+dayNamesMin: ['Do','Lu','Ma','Me','Gi','Ve','Sa'],
+    monthStatus: 'Voir un autre mois', yearStatus: 'Voir un autre année',
+
+};
+ $.datepicker.setDefaults($.datepicker.regional['it']);
+
+
+
+  if ($('#id_numero_di_convenzione') == 'None') {
+
+    alert('Prima di effetura la richiesta bisogna inserire numero e data di convenzione nella sezione Impostazioni!')
+
+  }
+
+
+
+$(window).on('shown.bs.modal', function() {
+
+  $("#button_ad_modal").attr("disabled", false); 
+
+$('#id_curriculum').val('');
+$('#id_autocertificazione').val('');
+$('#id_nome_cognome').val('');
+
+});
+
+
+
+   $('#id_tipologia').select2();
+
+
+
+
+
+  
+
+
+  $('#id_programma').val($('#tipprogramma'+$("#id_tipologia" ).val()).text());
+  //$('.tipdescr').hide();
+  $('#tipdescr'+$("#id_tipologia" ).val()).show();
+  //$('.tipref').hide();
+  $('#tipref'+$("#id_tipologia" ).val()).show();
+  //$('.tipore').hide();
+  $('#tipore'+$("#id_tipologia" ).val()).show();
+
+  if ($('#id_tipologia').val() == '')
+  {
+      
+  }
+  else
+  {
+      oreToCheck = $('#tipore'+$("#id_tipologia" ).val()).text();
+  }
+  
+
+
+
+
+
+
+
+
+
+   $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+
+
+
+
+
+
+  $( function() {
+    $( "#id_data_inizio").attr('autocomplete', 'off');
+    $( "#id_data_fine").attr('autocomplete', 'off');
+
+    var modifica = '{{modifica}}'
+    if  (modifica == 'ok') {
+    $( "#id_data_inizio" ).datepicker({ dateFormat: 'dd-mm-yy' });
+    $( "#id_data_fine" ).datepicker({ dateFormat: 'dd-mm-yy' });  
+
+    }
+
+    else {
+
+    $( "#id_data_inizio" ).datepicker({ minDate: 2, dateFormat: 'dd-mm-yy' });
+    $( "#id_data_fine" ).datepicker({ minDate: 2, dateFormat: 'dd-mm-yy' });  
+    }  
+
+
+  } );
+
+
+
+
+     $("#id_logo").change(function () {
+        var fileExtension = ['jpeg', 'jpg'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+            alert("Attenzione, il formato logo deve essere : "+fileExtension.join(', '));
+        }
+    });
+
+
+
+
+    $('#id_svolgimenti_field').hide();
+
+    var svolgimenti = [];
+    
+
+    try {
+      svolgimenti = JSON.parse($('#id_svolgimenti_field').val());
+    } catch(e) {}
+
+    if (svolgimenti.length > 0) {
+      svolgimenti.forEach(function(v) {
+        var block = addSvolgimento();
+        block.find('.svolgimento-inizio').val(v.inizio),
+        block.find('.svolgimento-ora').val(v.ora),
+        block.find('.svolgimento-durata').val(v.durata)
+
+        apriore += parseInt(v.durata)
+        sum_ore_global = apriore
+
+
+
+      });
+    } else {
+      addSvolgimento();
+    }
+
+    
+
+$( "#id_tipologia" ).change(function(e) {
+
+
+  $('#id_programma').val($('#tipprogramma'+e.target.value).text());
+  $('.tipdescr').hide();
+  $('#tipdescr'+e.target.value).show();
+  $('.tipref').hide();
+  $('#tipref'+e.target.value).show();
+  $('.tipore').hide();
+  $('#tipore'+e.target.value).show();
+
+  //console.log($('#id_data_inizio').val(), $.datepicker.formatDate('mm/dd/yy', new Date()))
+
+  oreToCheck = $('#tipore'+e.target.value).text();
+
+
+
+});
+
+   $('#id_direttori').val('{{direttore}}').prop("readonly", true);
+   $('#id_numero_di_convenzione').val('{{numero_di_convenzione}}').prop("readonly", true);
+   $('#id_data_di_convenzione').val('{{data_di_convenzione}}').prop("readonly", true);
+   $('#id_data_inizio').prop("readonly", true);
+   $('#id_data_fine').prop("readonly", true);
+
+
+
+    $("#mostradescr").click( function() {
+
+    $(this).html($(this).html() == 'Nascondi' ? 'Mostra descrizione'  : 'Nascondi' );                    
+});
+
+
+
+$('#myform').submit(function(event) {
+
+
+
+  event.preventDefault(); 
+
+
+
+  $('#id_data_inizio').val()
+
+  var numeroposti = parseInt($('#id_posti option:selected').text());
+  var numerodocenti = $('#div_id_docenti').find('input:checked').length;
+
+  var categoria_corso = $('#id_categoria option:selected').text();
+
+ 
+
+
+  
+  
+
+  
+
+     if (parseInt(oreToCheck) == sum_ore_global) { 
+
+                console.log('!------', numeroposti, numerodocenti)
+
+                if (categoria_corso != 'Aggiornamento') {
+       
+                                    if (numeroposti / 6 > numerodocenti)
+                                    {
+                                       alert('per ogni 6 corsisti bisogna esserci 1 docente')
+                                    }
+
+                                      else {
+                                        $(this).unbind('submit').submit()
+                                        $(":submit").attr("disabled", true);
+                                      }
+
+                                    }
+
+                    else {
+                      $(this).unbind('submit').submit()
+                      $(":submit").attr("disabled", true);
+                    }
+
+                    //$(this).unbind('submit').submit()
+
+                  }
+
+      else {
+        alert('Numero ore inserite non corrispondano al numero ore richieste per corso selezionato')
+
+        return false;
+      }
+
+    
+  // your code here
+});
+
+});
+
+ 
+
+  </script>
+
+
+
+
+
+
+
+
+
+
+{% if form.errors %}
+  <!-- Error messaging -->
+  <div id="errors">
+    <div class="inner">
+      <p>There were some errors in the information you entered. Please correct the following:</p>
+      {{ form.non_field_errors }}
+      <ul>
+        {% for field in form %}
+          {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <!-- /Error messaging -->
+{% endif %}
+
+
+
+
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width --> 
+<form enctype="multipart/form-data" action='' method='POST' id="myform">
+  {% csrf_token %}
+                        <div class="row nuovarichiesta">
+                          <div class="col-12">
+                            <h4>
+                              <p class="text-center font-weight-bold no-bottom-margin-p">
+                             <i class="fas fa-user-graduate"></i> Nuova richiesta di svolgimento corso
+                          </p>
+                        </h4>
+
+                          </div>  
+                        </div>
+
+
+                        <div class="row">
+
+                          <div class="col-12 col-md-8">
+                            <div class="card" style="background-color: #dee2e6;">
+                              <div class="card-header">
+                                    <p class="font-weight-bold"><i class="fas fa-book"></i> Scegli il corso:</p>
+                              </div>
+                            <div class="card-body">
+
+
+                                                {{ form.errors }}
+                                                 {{ form.non_field_errors }}
+
+
+
+
+
+     
+                                            <div class="form-group">
+
+                                                     
+                                                    {{ form.tipologia|as_crispy_field }}
+                                                  
+
+                                              </div>
+                                  
+
+
+                                  <p>
+                                  <a id="mostradescr" class="btn btn-outline-secondary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                    Mostra descrizione
+                                  </a>
+
+                                  <div class="collapse" id="collapseExample">
+                                  <div class="card card-body" style="background-color: white !important;">
+                                    {% for tip in tips %}
+
+                                      <p class="tipdescr" id="tipdescr{{tip.id}}"> {{ tip.descrizione }} </p>
+
+                                    {% endfor %}
+
+
+                                  </div>
+                                </div>
+                                </p>
+
+
+                                  <p>
+                                    <div class="alert alert-primary" role="alert" >
+
+                                           <i class="fas fa-info-circle"></i> Riferimento legislativo:
+
+                                            {% for tip in tips %}
+                                     
+
+                                           <p class="tipref" id="tipref{{tip.id}}"> {{ tip.riferimento_legislativo }} </p>
+
+                                           {% endfor %}
+
+                                    </div>
+                                  </p>
+
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="col-6 col-md-4">
+
+                                    <div class="card" style="background-color: #dee2e6;">
+                                    <div class="card-header"><p class="font-weight-bold"><i class="fas fa-user-check"></i> Direttore: </p></div>
+                                    <div class="card-body">
+                                      
+
+                                        <div class="form-group">
+                                          
+                                            {{ form.direttori|as_crispy_field }}
+                                            {{ form.numero_di_convenzione|as_crispy_field }}
+                                            {{ form.data_di_convenzione|as_crispy_field }}
+                                        </div>
+
+                              </div>
+                              </div>
+
+                          </div>
+              </div>
+
+  <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+  <div class="row">
+                                <div class="col-12 col-md-8">
+                                  <div class="card" style="background-color: #dee2e6;">
+                                    <div class="card-header"><p class="font-weight-bold"><i class="far fa-clone"></i> Programma corso:</p></div>
+                                      <div class="card-body">
+
+
+                                  <div class="form-group">
+
+                                          {% for tip in tips %}
+
+                                            <div class="tipprogramma" id="tipprogramma{{tip.id}}"> {{ tip.programma|safe }} </div>
+
+                                          {% endfor %}
+
+                                          <div> {{ form.programma|as_crispy_field }} </div>
+                                    </div>
+
+                                </div>
+                                </div>
+
+
+
+                              </div>
+                            <div class="col-6 col-md-4">
+
+                                      <div class="card" style="background-color: #dee2e6;">
+
+                                      <div class="card-header"> <p class="font-weight-bold"><i class="fas fa-user-friends"></i> Posti disponibili:</p></div>
+                                      <div class="card-body">
+
+                                          <div class="form-group">
+                                           
+
+                                            {{ form.posti|as_crispy_field }}
+                                 
+                                      </div>
+
+                                      </div>
+                                      </div>
+                             
+
+                              </div>
+    </div>
+
+
+
+
+  
+
+  <!-- Columns are always 50% wide, on mobile and desktop -->
+  <div class="row">
+                              <div class="col-12 col-md-8">
+
+                                      <div class="card" style="background-color: #dee2e6;">
+                                        <div class="card-header"><p class="font-weight-bold"><i class="fas fa-university"></i> Categoria:</p></div>
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                 {{ form.categoria|as_crispy_field }}
+                                            </div>
+
+                                        </div>
+                                        </div>
+                              </div>
+
+
+                           <div class="col-6 col-md-4">
+
+                                <div class="card" style="background-color: #dee2e6;">
+                                  <div class="card-header"><p class="font-weight-bold"><i class="fas fa-user-tie"></i> Docenti:</p></div>
+                                    <div class="card-body">
+
+                                      <div class="form-group docenti" id="primo_docente">
+                                          {{ form.docenti|as_crispy_field }}
+                                      </div>
+
+                                     
+
+                                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#aggiungi_docente" id="button_aggiungi_docente">Aggiungi docente</button>
+
+
+
+
+
+                                </div>
+                                </div>
+
+
+
+                                  
+
+
+                              </div>
+  </div>
+
+
+
+
+    <div class="row">
+                      <div class="col-12 col-md-8">
+                              <div class="card" style="background-color: #dee2e6;">
+                                  <div class="card-header"><p class="font-weight-bold"><i class="fas fa-globe"></i> Attivita di accesso al corso:</p>
+
+                                  </div>
+                                  <div class="card-body">
+
+                                    <div class="form-group">
+                                      
+                                      {{ form.attivita|as_crispy_field }}
+                                    </div>
+                                  </div>
+                          </div>
+                        </div>
+
+                      <div class="col-6 col-md-4">
+                        <div class="card" style="background-color: #dee2e6;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="far fa-image"></i> Logo <span style="font-weight: 100;">(proporzioni per migliore rappresentazione sull'attestato: 3:2)</span></p>
+                          </div>
+                          <div class="card-body">
+
+
+                              <div class="form-group">
+                                {{ form.logo|as_crispy_field }}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+    </div>
+
+  <div class="row">
+                        <div class="col-12">
+                            <div class="card" style="background-color: #dee2e6;">
+                                   <div class="card-header">
+                                            
+                                      <p class="font-weight-bold"><i class="fas fa-map-marker-alt"></i> Luogo e data</p>
+                                    </div>
+
+
+                                          <div class="card-body">
+                                                <div class="form-group">
+                                                   {{ form.indirizzo|as_crispy_field }}
+                                                </div>
+                                                <div class="form-row">
+                                                  <div class="form-group col-md-6">
+
+                                                    {{ form.citta|as_crispy_field }}
+                                                  </div>
+                                                  <div class="form-group col-md-3">
+
+                                                   {{ form.provincia|as_crispy_field }}
+                                                  </div>
+                                                  <div class="form-group col-md-3">
+                                                    {{ form.cap|as_crispy_field }}
+                                                  </div>
+                                                </div>
+                                    
+
+                                          </div>
+                            </div>
+
+
+
+                          </div>
+
+</div>
+
+ <div class="row">
+                <div class="col-6">
+                              <div class="card" style="background-color: #dee2e6;">
+                                  <div class="card-header"><p class="font-weight-bold"><i class="fas fa-calendar-alt"></i> Data inizio: </p>
+
+                                  </div>
+                                  <div class="card-body">
+
+                                    <div class="form-group">
+                                      
+                                      {{ form.data_inizio|as_crispy_field }}
+                                    </div>
+                                  </div>
+                          </div>
+                        </div>
+
+                      <div class="col-6">
+                        <div class="card" style="background-color: #dee2e6;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-calendar-alt"></i> Data fine: </p>
+                          </div>
+                          <div class="card-body">
+
+
+                              <div class="form-group">
+                                {{ form.data_fine|as_crispy_field }}
+                              </div>
+                          </div>
+                          </div>
+
+                  </div>
+    </div>
+
+
+<div class="row">
+                                <div class="col-12">
+                                      <div class="card">
+                                         <div class="card-header">                                            
+                                            <p class="font-weight-bold"><i class="fas fa-info-circle"></i> Date di svolgimento del corso:</p> </div>
+                                                <div class="card-body">
+                                                    <p>Nota:</p>
+                                                    <p>
+                                                    Il totale complessivo di ore deve corrispondere al numero di ore del tipo di corso selezionato, in questo caso: {% for tip in tips %} <span class="tipore" id="tipore{{tip.id}}"> {{tip.ore}}</span>{% endfor %};
+                                                    La data del primo svolgimento deve corrispondere alla data di inizio corso;
+                                                    Se nella stessa giornata è prevista una pausa, bisogna inserire due svolgimenti per tale giornata, es. 20/01/2012 09:00 (4 ore) e 20/01/2012 14:00 (4 ore);</p>
+                                                </div>
+                                      </div>
+                              </div>
+</div>
+
+  {{ form.svolgimenti_field }}
+
+ <div id="svolgimenti">
+
+
+</div>
+ {% if modifica == 'non si puo' %}
+
+ 
+
+                  {% else %}
+
+  <div class="row">
+                      <div class="col-6"></div>
+                      <div class="col-6">
+                            <span class="float-right"> 
+                                  <button type="button" class="btn btn-success text"  id="aggiungi-svolgimento-button" onclick="addSvolgimento()"  style="margin-top: 15px; margin-bottom: 15px;" >
+                                        <span class="font-weight-bold">
+                                            <i class="fas fa-plus"></i> Aggiungi Svolgimento
+                                      </span>
+                                </button>
+                           </span>
+                      </div>
+</div>
+
+{% endif %}
+
+
+       
+  
+
+
+
+
+
+
+
+
+              <div class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+                 {% if modifica == 'non si puo' %}
+
+          ******Corso gia convalidato******
+
+                  {% else %}
+
+
+               <button type="submit button" value="submit" class="btn btn-primary btn-lg" style="margin-right: 25px;">
+                  <span class="font-weight-bold">
+                  <i class="fas fa-check-circle fa-lg"></i> Salva e invia
+                  </span>
+                </button>
+
+                <button  class="btn btn-outline-primary btn-lg disabled" type="button">
+                    <span class="font-weight-bold">
+                    <i class="far fa-clone"></i> Salva come bozza
+                    </span>
+                </button>
+                  {% endif  %}
+              </div>
+            
+
+</form>
+<!-- Modal -->
+                        <div class="modal fade" id="aggiungi_docente" tabindex="-1" role="dialog" aria-labelledby="aggiungi_docenteLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Aggiungi docente</h5>
+
+                               
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="alert alert-warning" role="alert">
+                                  Attenzione!
+                                </div>
+
+                                <div class="alert alert-success" role="alert">
+                                È obbligatorio allegare l'autocertificazione al curriculum caricato a seguito del Decreto "CRITERI DI QUALIFICAZIONE DELLA FIGURA DEL FORMATORE PER LA SALUTE E SICUREZZA SUL LAVORO"  
+                                </div>
+
+
+                                <form method="POST" enctype="multipart/form-data" id="aggiungi-docente-form">
+                                <input type="hidden" name="user" class="form-control" id="id_user" value="{{user.id}}"> 
+                                  <div class="form-group">
+                                    <label for="id_nome_cognome" class="col-form-label requiredField">
+                                        Nome e cognome
+                                        <span class="asteriskField">*</span>
+                                      </label>
+                                    <input type="text" name="nome_cognome" class="form-control" required id="id_nome_cognome">
+                                  </div>
+                                  <div class="form-group">
+                                   <label for="id_curriculum" class="col-form-label requiredField">
+                                    Curriculum Vitae
+                                    <span class="asteriskField">*</span>
+                                  </label>
+                                     <input type="file" name="curriculum" class="form-control" style="padding:0;" required id="id_curriculum">
+                                  </div>
+                                   <div class="form-group">
+                                   <label for="id_autocertificazione" class="col-form-label requiredField">
+                                    Autocertificazione
+                                    <span class="asteriskField">*</span>
+                                  </label>
+                                     <input type="file" name="autocertificazione" class="form-control" style="padding:0;" required id="id_autocertificazione">
+                                  </div>
+                              
+                                </form>
+
+                              </div>
+                              <div class="modal-footer">
+
+                                <button type="button" class="btn btn-primary" id="button_ad_modal" onclick="aggiungiDocente()">Aggiungere docente</button>
+                                <button type="button" class="btn btn-warning" data-dismiss="modal">Chiudere</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+
+                              <!-- Modal -->
+       <div class="modal fade" id="aggiungi_direttore" tabindex="-1" role="dialog" aria-labelledby="aggiungi_direttoreLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Aggiungi direttore</h5>
+
+                               
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                 <div class="alert alert-warning" role="alert">
+                                  Attenzione!
+                                </div>
+
+                                <div class="alert alert-success" role="alert">
+                                È obbligatorio allegare l'autocertificazione al curriculum caricato a seguito del Decreto "CRITERI DI QUALIFICAZIONE DELLA FIGURA DEL FORMATORE PER LA SALUTE E SICUREZZA SUL LAVORO"  
+                                </div>
+
+
+                                <form method="POST" enctype="multipart/form-data" id="aggiungi-direttore-form">
+                                <input type="hidden" name="user_direttore" class="form-control" id="id_user_direttore" value="{{user.id}}"> 
+                                  <div class="form-group">
+                                    <input type="text" name="nome_cognome_direttore" class="form-control" required="" id="id_nome_cognome_direttore">
+
+                                  </div>
+                                  <div class="form-group">
+                                     <input type="file" name="curriculum_direttore" class="form-control" required="" id="id_curriculum_direttore">
+                                  </div>
+                              
+                                </form>
+
+                              </div>
+                              <div class="modal-footer">
+
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="aggiungiDirettore()">Aggiungere direttore</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="modal-spinner"></div>
+
+
+
+ <div id="graveyard" style="display: none;">
+
+        <div class="row aggiungi-svolgimento-row" id="svolgimento_div_template">
+                <div class="col-12">
+              <div class="card">
+                     <div class="card-header"> <span class="font-weight-bold svolgimento-title"> Template </span>
+                      <button type="button" class="close remove-svolgimento" data-dismiss="svolgimento" aria-label="Close" onclick="closeBox(event)">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                     </div>
+      <div class="card-body">
+        <div id="div_id_data" class="form-group">                
+          <label for="id_data" class="col-form-label  requiredField datepicker">
+              Il giorno<span class="asteriskField">*</span>
+          </label>
+          <input type="text" name="data" class="dateinput form-control svolgimento-inizio" maxlength="300" id="id_data" onchange="svolgimentoChangeHandler()">
+        </div>
+        <div id="div_id_ora" class="form-group">        
+          <label for="id_ora" class="col-form-label  requiredField">
+              L`ora<span class="asteriskField">*</span>
+          </label>
+          <input type="text" name="ora" class="timeinput form-control svolgimento-ora" required="" id="id_ora" onchange="svolgimentoChangeHandler()">
+        </div>
+        <div id="div_id_durata" class="form-group">        
+          <label for="id_durata" class="col-form-label  requiredField">
+              Durata ore<span class="asteriskField">*</span>
+          </label>
+          <select name="durata" class="select form-control svolgimento-durata" required="" id="id_durata" onchange="svolgimentoChangeHandler()">
+            <option value="" selected="">---------</option>
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+
+          </select>                 
+        </div>
+
+               </div>
+               </div>
+             </div>
+            </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}

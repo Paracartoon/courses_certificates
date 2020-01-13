@@ -1,0 +1,212 @@
+    {% extends "base.html" %}
+
+    {% load crispy_forms_tags %}
+
+    {% block content %}
+
+
+
+    {% if user.is_authenticated %}
+
+    <script>
+  $( document ).ready(function() {
+
+    $( "#id_data_di_convenzione").attr('autocomplete', 'off');
+$( "#id_data_di_convenzione" ).datepicker({ dateFormat: 'dd/mm/yy' });
+
+    (function() {
+  var anchors = $("[href$='.jpg'], [href$='.png'], [href$='.jpeg'], [href$='.JPG']"),
+    i = 0,
+    len = anchors.length;
+
+  for (i, len; i < len; i++) {
+    var anchor = $(anchors[i]),
+      href = anchor.attr('href'),
+      text = anchor.text(),
+      img = $("<img/>", {
+        src: href,
+        alt: text,
+        style: 'width:200px; display:inline-block; padding: 10px;'
+      });
+    anchor.replaceWith(img);
+  }
+
+})();
+
+
+     $("#id_logo").change(function () {
+        var fileExtension = ['jpg'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+           $( "#dialog" ).dialog({
+      modal: true,
+      buttons: {
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+        }
+    });
+
+
+
+      $("#id_firma_digitale").change(function () {
+        var fileExtension = ['jpg'];
+        if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                       $( "#dialog" ).dialog({
+      modal: true,
+      buttons: {
+        Ok: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+        }
+    });
+
+
+
+
+    });
+
+
+    </script>
+
+
+          <div class="row" style="margin-top: 25px;">
+            <div class="col-2">
+
+
+            </div>
+            <div class="col-8 col-sm-12"> 
+              {% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+              <form enctype="multipart/form-data" action='' method='POST'>
+                            {% csrf_token %}
+<div class="table-responsive">
+
+        <table class="table table-bordered table-light">
+                                <thead class="thead-dark ">
+                                          <tr>
+                                        <th scope="col" >Numero di convenzione</th>
+                                        <th scope="col">Data di convenzione</th>
+                  
+                              
+
+     
+                                        </tr>
+                                </thead>
+                              <tbody>
+                                      
+
+                          
+
+                             <tr>
+                          <td>{{ form.numero_di_convenzione }}</td>
+                          <td>{{ form.data_di_convenzione }}</td>
+
+
+
+                        </tr>
+     
+
+                      </tbody>
+                    </table>
+                              <table class="table table-bordered table-light">
+                                <thead class="thead-dark ">
+                                          <tr>
+                                        <th scope="col" >Logo (formato *jpg)</th>
+                                        <th scope="col">Firma digitale (formato *jpg) <span style="font-weight: 900;">(proporzioni migliori: 3:2 <br> La firma deve occupare quasi tutto lo spazio del file caricato)</span></th>
+                  
+                              
+
+     
+                                        </tr>
+                                </thead>
+                              <tbody>
+                                      
+
+                          
+
+                             <tr>
+                          <td>{{ form.logo }}</td>
+                          <td>{{ form.firma_digitale }}</td>
+
+
+
+                        </tr>
+     
+
+                      </tbody>
+                    </table>
+
+                    <table class="table table-bordered table-light">
+                                <thead class="thead-dark ">
+                                        <tr>
+                                        <th scope="col">Nome dell`azienda</th>
+                                        <th scope="col">Via, numero civico</th>
+                                        <th scope="col">CAP citta (provincia)</th>
+                   
+                                        </tr>
+                                </thead>
+                              <tbody>
+
+                                <tr>
+                          <td>{{form.nome_azienda}}</td>
+                          <td>{{form.indirizzo_1}}</td>
+                           <td>{{form.indirizzo_2}}</td>
+
+
+
+                        </tr>        
+           
+          </tbody>
+                    </table>
+
+  </div>
+      
+
+
+                                  <button type="submit button" value="Submit"  style="margin-top:15px; margin-bottom:15px;" class="btn btn-success">Aggiornare logo e firma digitale</button>
+                            </form>
+
+                        
+
+
+            </div>
+          </div>
+
+
+          
+             <div id="dialog" title="Formato sbagliato" style="display: none;">
+            <p>Per migliorare l`aspetto dell`attestato si consiglia di caricare logo e firma in formato *jpg.</p>
+            </div>
+                              
+
+
+
+           {% else %} 
+
+
+            Accesso negato
+
+
+
+          {% endif %}
+
+
+  {% endblock %}
+
+

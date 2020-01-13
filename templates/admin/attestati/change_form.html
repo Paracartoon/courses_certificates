@@ -1,0 +1,64 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+{% block object-tools-items %}
+    <li>
+        <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a>
+    </li>
+
+    {% if has_absolute_url %}
+        <li>
+            <a href="{% url 'admin:view_on_site' content_type_id original.pk %}" class="viewsitelink">{% trans "View on site" %}</a>
+        </li>
+    {% endif %}
+
+    <link href='https://code.jquery.com/ui/1.12.1/themes/cupertino/jquery-ui.css' rel='stylesheet' type='text/css'>
+
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.js"
+        integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+        crossorigin="anonymous">
+    </script>
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+        crossorigin="anonymous">
+    </script>
+
+
+
+        <script>
+        $( document ).ready(function() {
+    
+
+            var field = $("#id_corsisti_field");
+            field.hide();
+            var container = field.parent();
+            var table = $('<table/>');
+            var headerRow = $('<tr><th>Nome</th><th>Cognome</th><th>Sesso</th><th>Luogo di nascita</th><th>Provincia</th><th>Data di nascita</th><th>CF</th><th>Posizione</th></tr>');
+            table.append(headerRow);
+
+
+            var corsisti = [];
+            try {
+                corsisti = JSON.parse(field.val());
+            } catch (e) {
+                console.error(e)
+            }
+
+
+            corsisti.forEach(function(v) {
+                console.log('!!!', v)
+                if ('birthplace_' in v) {
+                var dataRow = $('<tr><td>'+v.nome+'</td><td>'+v.cognome+'</td><td>'+v.sesso+'</td><td>'+v.birthplace_+'</td><td>'+v.birthplace_province_+'</td><td>'+v.datanascita+'</td><td>'+v.cf+'</td><td>'+v.posizione+'</td></tr>')}
+                else {
+                var dataRow = $('<tr><td>'+v.nome+'</td><td>'+v.cognome+'</td><td>'+v.sesso+'</td><td>'+v.birthplace+'</td><td>'+v.birthplace_province+'</td><td>'+v.datanascita+'</td><td>'+v.cf+'</td><td>'+v.posizione+'</td></tr>')
+                }
+                table.append(dataRow);
+            })
+            container.append(table);
+        })
+    </script>
+
+
+
+{% endblock %}

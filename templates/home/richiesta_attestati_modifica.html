@@ -1,0 +1,760 @@
+{% extends "base_white.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+
+<script src="https://lucavandro.github.io/CodiceFiscaleJS/codice.fiscale.var.js"></script>
+<script src="http://momentjs.com/downloads/moment-with-locales.js"></script>
+
+
+<script>
+
+   $(function(){
+    var $select = $(".01-12");
+    for (i=1;i<=12;i++){
+        $select.append($('<option></option>').val(i).html(i))
+    }
+});
+
+   
+
+
+ 
+    function closeBox(buttonId) {
+
+    var divId = buttonId.substring(2);
+
+
+    var box = $("#"+divId)
+
+    var howManyChildren = $("#corsisti").children().length;
+    var divNumber = divId.match(/\d+/g).map(Number);
+    console.log('----------------------------------------', divId, howManyChildren, '+/*--', parseInt(divNumber));
+
+
+
+
+    if (howManyChildren == parseInt(divNumber)) {
+
+      box.slideUp( "slow", function() {
+
+        box.remove();
+        $("#corsisti").children().each(function(i, element){
+          var block = $(element);
+          var label = block.find('.corsista-title');
+          label.text("Corsista " + (i + 1));
+        })
+      });
+
+      setTimeout(corsistaChangeHandler, 1000);
+
+    }
+
+  else {
+      alert('Si prega di cancellare i corsisti dal basso per preservare l`ordine')
+    }
+
+    
+
+
+  }
+
+
+
+
+function addCorsistaAnagrafica(a) {
+  console.log('Add corsista from anagrafica', a)
+
+  var rawToHide = $('#button_'+a.cf).parent().parent();
+  rawToHide.remove();
+
+   var index = $("#corsisti").children().length + 1;
+
+
+    var newBox = $("#corsista_div_template_noselect").clone().attr('id', 'corsista_div_noselect_' + index);
+    var label = newBox.find('.corsista-title');
+    
+    label.text("Corsista " + index);
+    var cf1 = newBox.find("#id_corsista-birthplace_province");
+    var cf2 = newBox.find("#id_corsista-birthplace");
+    var posizione = newBox.find("#id_posizione");
+    var datepick = newBox.find('#id_datanascita');
+    
+    datepick.attr('id', 'id_datanascita' + index);
+
+    cf1.attr('id', "id_corsista-birthplace_province" + index);
+    cf2.attr('id', "id_corsista-birthplace" + index);
+    posizione.attr('id', "id_posizione" + index);
+     var closebutton1 = newBox.find('#b_corsista_div_noselect');
+ closebutton1.attr('id', "b_corsista_div_noselect_" + index);
+
+
+
+  
+
+    newBox.appendTo("#corsisti");
+
+    newBox.find("#id_nome").val(a.nome);
+    newBox.find("#id_cognome").val(a.cognome);
+    newBox.find("#id_sesso").val(a.sesso);
+
+    newBox.find("#id_corsista-birthplace_province" + index).val(a.provincia);
+    newBox.find("#id_corsista-birthplace" + index).val(a.luogo);
+    
+
+    datepick.datepicker({
+    dateFormat: "dd-mm-yy"
+}).datepicker("setDate", a.datanascita);
+
+    newBox.find("#id_cf").val(a.cf);
+
+
+
+    index++;
+
+    return newBox;
+
+
+};
+
+
+
+
+  function addCorsista() {
+
+    var index = $("#corsisti").children().length + 1;
+
+
+    var newBox = $("#corsista_div_template").clone().attr('id', 'corsista_div_' + index);
+    var label = newBox.find('.corsista-title');
+    
+    label.text("Corsista " + index);
+    var cf1 = newBox.find("#id_corsista-birthplace_province");
+    var cf2 = newBox.find("#id_corsista-birthplace");
+    var posizione = newBox.find("#id_posizione");
+    var datepick = newBox.find('#id_datanascita');
+    
+    datepick.attr('id', 'id_datanascita' + index);
+
+    cf1.attr('id', "id_corsista-birthplace_province" + index);
+    cf2.attr('id', "id_corsista-birthplace" + index);
+    posizione.attr('id', "id_posizione" + index);
+    var closebutton2 = newBox.find('#b_corsista_div');
+    closebutton2.attr('id', "b_corsista_div_" + index);
+    
+    datepick.attr('autocomplete', 'off');
+    datepick.datepicker({changeMonth: true,
+            changeYear: true,
+            yearRange: '-100:+0',
+            dateFormat: 'dd-mm-yy' });
+
+
+    
+
+    newBox.appendTo("#corsisti");
+
+
+
+
+            
+    $(".corsista-cf").attr('autocomplete', 'off');
+
+
+
+      var options="";
+      var numberOfItemsNeeded={{posti}};
+      for(var i=1;i<=numberOfItemsNeeded;i++)
+      {
+         options+="<option value='"+i+"'>"+i+"</option>";
+      }
+
+  
+      $("#id_posizione"+index).html(options); 
+
+
+ 
+
+
+    index++;
+
+    return newBox;
+  };
+
+
+
+
+  function corsistaChangeHandler() {
+    var corsisti = [];    
+    $("#corsisti").children()
+      .each(function(i, element){
+        var block = $(element);
+
+        
+        var id = block.attr('id')
+
+        var index = id.indexOf('corsista_div_') == 0 ? parseInt(id.split('_')[2]) - 1 : -1;
+
+        if (isNaN(index)) {
+
+        var index = id.indexOf('corsista_div_noselect_') == 0 ? parseInt(id.split('_')[3]) - 1 : -1;
+      }
+
+
+
+
+
+
+          corsisti[index] = {
+            nome: block.find('.corsista-nome').val(),
+            cognome: block.find('.corsista-cognome').val(),
+            sesso: block.find('.corsista-sesso').val(),
+            birthplace_: block.find('.corsista-birthplace').val(),
+            birthplace_province_: block.find('.corsista-birthplace_province').val(),
+            datanascita: block.find('.corsista-datanascita').val(),
+            cf: block.find('.corsista-cf').val(),
+            posizione: block.find('.corsista-posizione').val()
+          }
+            
+
+      })
+
+
+
+ 
+
+    var corsistiJSON = JSON.stringify(corsisti);
+    console.log('corsisti after all', corsisti, corsistiJSON)
+
+
+    $('#id_corsisti_field').val(corsistiJSON);
+
+
+  }
+
+
+  $( document ).ready(function() {
+
+    $.datepicker.regional['it'] = {
+    closeText: 'Chiudi', closeStatus: 'Fermer sans modifier',
+    monthNames: ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno',
+'Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+monthNamesShort: ['Gen','Feb','Mar','Apr','Mag','Giu',
+'Lug','Ago','Set','Ott','Nov','Dic'],
+dayNames: ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'],
+dayNamesShort: ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+dayNamesMin: ['Do','Lu','Ma','Me','Gi','Ve','Sa'],
+    monthStatus: 'Voir un autre mois', yearStatus: 'Voir un autre année',
+
+};
+ $.datepicker.setDefaults($.datepicker.regional['it']);
+
+
+
+
+
+      $('#id_corsisti_field').hide();
+
+    var corsistii = [];
+    
+
+    try {
+      corsistii = JSON.parse($('#id_corsisti_field').val());
+    } catch(e) {}
+
+    if (corsistii.length > 0) {
+      
+      corsistii.forEach(function(v) {
+
+      
+        var block = addCorsista();
+
+        block.find('.corsista-nome').val(v.nome),
+        block.find('.corsista-cognome').val(v.cognome),
+        block.find('.corsista-sesso').val(v.sesso),
+        block.find('.corsista-birthplace').val(v.birthplace_),
+        block.find('.corsista-birthplace_province').val(v.birthplace_province_),
+        block.find('.corsista-datanascita').val(v.datanascita),
+        block.find('.corsista-cf').val(v.cf),
+        block.find('.corsista-posizione').val(v.posizione)
+     
+
+
+
+
+      });
+    } else {
+
+
+
+    }
+
+
+
+      
+  });
+
+
+
+
+
+  </script>
+
+
+
+
+
+{% if form.errors %}
+  <!-- Error messaging -->
+  <div id="errors">
+    <div class="inner">
+      <p>There were some errors in the information you entered. Please correct the following:</p>
+      {{ form.non_field_errors }}
+      <ul>
+        {% for field in form %}
+          {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <!-- /Error messaging -->
+{% endif %}
+
+
+
+
+
+
+<!-- Stack the columns on mobile by making one full-width and the other half-width -->
+                        <div class="row nuovarichiesta">
+                          <div class="col-12">
+                            <h4>
+                              <p class="text-center font-weight-bold no-bottom-margin-p">
+                             <i class="fas fa-scroll"></i> Modifica richiesta di rilascio attestati
+                          </p>
+                        </h4>
+
+                          </div>  
+                        </div>
+
+
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+    {% endif %}
+
+
+
+
+
+      <form enctype="multipart/form-data" action='' method='POST'>
+                                    
+
+                                                     {% csrf_token %}
+
+              <div class="row">
+                  
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file PROGRAMMA in formato *PDF o *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                          {{form.programma_svolto|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file TEST in formato *PDF o *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.test|as_crispy_field}}
+                              </div>
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-4">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file REGISTRO in formato *PDF o *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.registro|as_crispy_field}}
+                              </div>
+                           
+                          </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+
+                        <div class="row">
+
+                      <div class="col-6">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file VERBALE in formato *PDF, *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.verbale|as_crispy_field}}
+                              </div>
+                           
+                          </div>
+                          </div>
+
+                        </div>
+
+
+                      <div class="col-6">
+                        <div class="card" style="background-color: #e7eef4;">
+
+                          <div class="card-header">
+                              <p class="font-weight-bold"><i class="fas fa-file-upload"></i> Caricare file IDONEI in formato *PDF o *JPG: </p>
+                          </div>
+                          <div class="card-body">
+                              <div class="form-group">
+                       {{form.idonei|as_crispy_field}}
+                              </div>
+                           
+                          </div>
+                          </div>
+
+                        </div>
+
+                        </div>
+
+
+
+
+  {{ form.corsisti_field }}
+
+  <input name="numero_corso_field" style="display: none;"  value="{{corsoid}}">
+
+
+
+
+ 
+<div id="corsisti">
+  </div>
+
+
+  <div class="row">
+
+
+
+                      <div class="col-6">
+                        
+                    
+  <button type="button" class="btn btn-success text btn-lg" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" style="margin-top: 15px; margin-bottom: 15px; width: 100%;" >
+                                        <span class="font-weight-bold">
+    <i class="fas fa-users"></i> Selezionare corsisti dall`anagrafica 
+  </span>
+
+
+  </button>
+
+                      </div>
+                      <div class="col-6">
+                  
+                                  <button type="button" class="btn btn-success text btn-lg" id="aggiungi-corsista-button" onclick="addCorsista()"  style="margin-top: 15px; margin-bottom: 15px; width:100%;" >
+                                        <span class="font-weight-bold">
+                                            <i class="fas fa-plus"></i> Aggiungere nuovo corsista
+                                      </span>
+                                </button>
+                         
+                      </div>
+</div>
+
+  
+<div class="collapse" id="collapseExample" style="margin-bottom: 15px;margin-top: 20px;">
+  <div class="card card-body">
+    <div class="table-responsive">
+<table class="table table-bordered table-light">
+
+                      <tbody>
+
+
+                         {% for a in corsisti_table %}
+                        
+                        <tr>
+                          <td>{{a.nome}}</td>
+                          <td>{{ a.cognome }}</td>
+                          <td>{{ a.sesso }}</td>
+                          <td>{{ a.datanascita }}</td>
+                          <td>{{ a.cf }}</td>
+                          <td><button type="button" class="btn btn-success" style="color:white;" onclick="addCorsistaAnagrafica({{ a }})" id="button_{{a.cf}}"><i class="fas fa-user-plus"></i>
+                          </button></td>
+                     
+
+
+                        </tr>
+                        
+                        {% endfor %}
+
+
+
+                  
+
+                          
+
+                      </tbody>
+                    </table>
+                  </div>
+  </div>
+</div>
+
+ 
+
+
+
+
+
+
+
+
+
+
+       
+  
+
+
+
+              <div class="text-center" style="margin-top: 50px; margin-bottom: 30px;">
+
+        
+
+               <button type="submit button" value="Submit" class="btn btn-primary btn-lg" style="margin-right: 25px;">
+                  <span class="font-weight-bold">
+                  <i class="fas fa-check-circle fa-lg"></i> Modifica richiesta 
+                  </span>
+                </button>
+
+
+              </div>
+
+              
+
+</form>
+
+<div id="graveyard" style="display: none;">
+  <div class="row aggiungi-corsista-row" id="corsista_div_template">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <span class="font-weight-bold corsista-title"> 
+            Template 
+          </span>
+          <button type="button" class="close remove-corsista" data-dismiss="corsista" aria-label="Close" id="b_corsista_div" onclick="closeBox(this.id)">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="div_id_nome" class="form-group">                
+            <label for="id_nome" class="col-form-label requiredField">
+              Nome
+              <span class="asteriskField">*</span>
+            </label>
+            <input required type="text" name="nome" class="dateinput form-control corsista-nome" maxlength="300" id="id_nome" onchange="corsistaChangeHandler()">
+          </div>
+          <div id="div_id_cognome" class="form-group">                
+            <label for="id_cognome" class="col-form-label requiredField">
+              Cognome
+              <span class="asteriskField">*</span>
+            </label>
+            <input required type="text" name="cognome" class="dateinput form-control corsista-cognome" maxlength="300" id="id_cognome" onchange="corsistaChangeHandler()">
+          </div>
+          <div id="div_id_sesso" class="form-group">        
+            <label for="id_sesso" class="col-form-label requiredField">
+              Sesso <span class="asteriskField">*</span>
+            </label>
+            <select name="sesso" class="select form-control corsista-sesso" required id="id_sesso" onchange="corsistaChangeHandler()">
+              <option value="" selected="">---------</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
+            </select>              
+          </div>
+
+          <div id="div_id_birthplace_province" class="form-group">        
+            <label for="id_birthplace_province" class="col-form-label requiredField">
+              Provincia di nascita
+              <!--<span class="asteriskField">*</span>-->
+            </label>
+            <input type="text" class="form-control corsista-birthplace_province" name="birthplace_province" id="id_corsista-birthplace_province"  required onchange="corsistaChangeHandler()">
+
+                    
+          </div>
+
+           <div id="div_id_birthplace" class="form-group">        
+            <label for="id_birthplace" class="col-form-label requiredField">
+              Luogo di nascita
+              <!--<span class="asteriskField">*</span>-->
+            </label>
+            <input type="text" class="form-control corsista-birthplace" name="birthplace" id="id_corsista-birthplace" required onchange="corsistaChangeHandler()">
+
+                    
+          </div>
+          
+                <div id="div_id_datanascita" class="form-group">       
+                      <label for="id_datanascita" class="col-form-label requiredField">
+                        Data di nascita
+                        <span class="asteriskField">*</span>
+                      </label>
+                      <input type="text" class="form-control corsista-datanascita" id="id_datanascita" name="id_birthday" required onchange="corsistaChangeHandler()" >
+                      
+              
+
+          
+         
+            </div>
+          <div id="div_id_cf" class="form-group">                
+            <label for="id_cf" class="col-form-label requiredField">
+              Codice fiscale
+              <span class="asteriskField">*</span>
+            </label>
+            <input type="text" name="cf" class="dateinput form-control corsista-cf" maxlength="300" id="id_cf" required onchange="corsistaChangeHandler()">
+          </div>
+           <div id="div_id_posizione" class="form-group">                
+            <label for="id_posizione" class="col-form-label requiredField">
+              Posizione corsista
+              <span class="asteriskField">*</span>
+            </label>
+             <select name="posizione" class="select form-control corsista-posizione" required id="id_posizione" onchange="corsistaChangeHandler()">
+           
+            </select> 
+
+          </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+
+
+       <div class="row aggiungi-corsista-row" id="corsista_div_template_noselect">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <span class="font-weight-bold corsista-title"> 
+            Template 
+          </span>
+          <button type="button" class="close remove-corsista" data-dismiss="corsista" aria-label="Close" id="b_corsista_div_noselect" onclick="closeBox(this.id)">
+          <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="card-body">
+          <div id="div_id_nome" class="form-group">                
+            <label for="id_nome" class="col-form-label requiredField">
+              Nome
+              <span class="asteriskField">*</span>
+            </label>
+            <input required type="text" name="nome" class="dateinput form-control corsista-nome" maxlength="300" id="id_nome" onchange="corsistaChangeHandler()">
+          </div>
+          <div id="div_id_cognome" class="form-group">                
+            <label for="id_cognome" class="col-form-label requiredField">
+              Cognome
+              <span class="asteriskField">*</span>
+            </label>
+            <input required type="text" name="cognome" class="dateinput form-control corsista-cognome" maxlength="300" id="id_cognome" onchange="corsistaChangeHandler()">
+          </div>
+          <div id="div_id_sesso" class="form-group">        
+            <label for="id_sesso" class="col-form-label requiredField">
+              Sesso <span class="asteriskField">*</span>
+            </label>
+
+            <input required type="text" name="sesso" class="dateinput form-control corsista-sesso" maxlength="300" id="id_sesso" onchange="corsistaChangeHandler()">
+                
+          </div>
+
+          <div id="div_id_birthplace_province" class="form-group">        
+            <label for="id_birthplace_province" class="col-form-label requiredField">
+              Provincia di nascita
+              <!--<span class="asteriskField">*</span>-->
+            </label>
+            <input type="text" class="form-control corsista-birthplace_province" name="birthplace_province" id="id_corsista-birthplace_province"  required onchange="corsistaChangeHandler()">
+
+                    
+          </div>
+
+           <div id="div_id_birthplace" class="form-group">        
+            <label for="id_birthplace" class="col-form-label requiredField">
+              Luogo di nascita
+              <!--<span class="asteriskField">*</span>-->
+            </label>
+            <input type="text" class="form-control corsista-birthplace" name="birthplace" id="id_corsista-birthplace" required onchange="corsistaChangeHandler()">
+                                          
+          </div>
+          
+                <div id="div_id_datanascita" class="form-group">       
+                      <label for="id_datanascita" class="col-form-label requiredField">
+                        Data di nascita
+                        <span class="asteriskField">*</span>
+                      </label>
+                      <input type="text" class="form-control corsista-datanascita" id="id_datanascita" name="id_birthday" required onchange="corsistaChangeHandler()" >
+                      
+              
+
+          
+         
+            </div>
+          <div id="div_id_cf" class="form-group">                
+            <label for="id_cf" class="col-form-label requiredField">
+              Codice fiscale
+              <span class="asteriskField">*</span>
+            </label>
+            <input type="text" name="cf" class="dateinput form-control corsista-cf" maxlength="300" id="id_cf" required onchange="corsistaChangeHandler()">
+          </div>
+           <div id="div_id_posizione" class="form-group">                
+            <label for="id_posizione" class="col-form-label requiredField">
+              Posizione corsista
+              <span class="asteriskField">*</span>
+            </label>
+             <input type="text" name="posizione" class="form-control corsista-posizione" required id="id_posizione" onchange="corsistaChangeHandler()">
+           
+
+          </div>
+          </div>
+         
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+  <script>
+
+
+        
+    </script>
+{% endblock %}

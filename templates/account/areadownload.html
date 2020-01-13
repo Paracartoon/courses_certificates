@@ -1,0 +1,150 @@
+    {% extends "base.html" %}
+
+    {% load crispy_forms_tags %}
+
+    {% block content %}
+
+    {% if user.is_authenticated %}
+
+
+          <div class="row" style="margin-top: 25px;">
+
+            <div class="col-1">
+            </div>
+            <div class="col-10">
+{% if md == True %}
+<table class="table table-bordered table-light">
+  <thead class="thead-dark ">
+    <tr>
+      <th scope="col">Descrizione</th>
+      <th scope="col">Link per scaricare Materiale Didattico </th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in files %}
+    <tr>
+      <th scope="row">{{f.descrizione}}</th>
+      <td><p class="font-weight-bold"><a href="/media/{{f.archivio}}">Scaricare file (*ZIP ecc)</a></p></td>
+      
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endif %}
+
+<br>
+
+
+
+<table class="table table-bordered table-light">
+  <thead class="thead-dark ">
+    <tr>
+
+      <th scope="col">Documenti Corsi </th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/DOCENTI_AUTO_CERTIFICAZIONI_1.pdf">Autocertificazione docenti.pdf</a></p></td>
+      
+    </tr>
+
+
+     <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/uploads/EDAFIL_-_Richiesta_Corso.pdf">Richiesta corso.pdf</a></p></td>
+      
+    </tr>
+
+    <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/MODULO_RICHIESTA_TESSERINI.xlsx">Modulo richiesta tesserini.xlsx</a></p></td>
+     
+    </tr>
+    {% for file in dld%}
+       <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/{{file.file}}">{{file.nome}}</a></p></td>
+      
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+<br>
+
+
+<table class="table table-bordered table-light">
+  <thead class="thead-dark">
+    <tr>
+
+      <th scope="col">I test</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    
+
+
+        <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/EDAFIL - Questionario Formazione Pompe di Calcestruzzo.pdf">EDAFIL - Questionario Formazione Pompe di Calcestruzzo.pdf</a></p></td>
+      
+    </tr>
+
+
+        <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/EDAFIL - Questionario Formazione Carroponte.pdf">EDAFIL - Questionario Formazione Carroponte.pdf</a></p></td>
+      
+    </tr>
+
+
+    {% for file in dld_tests%}
+       <tr>
+
+      <td><p class="font-weight-bold"><a href="/media/{{file.file}}">{{file.nome}}</a></p></td>
+      
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+
+
+
+
+
+           
+          
+          </div>
+                              
+
+
+
+           {% else %} 
+
+
+            Accesso negato
+
+
+
+          {% endif %}
+
+
+  {% endblock %}
